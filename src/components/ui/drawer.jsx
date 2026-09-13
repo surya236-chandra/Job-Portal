@@ -40,10 +40,16 @@ function Drawer({
   )
 }
 
-function DrawerTrigger({
-  ...props
-}) {
-  return <DrawerPrimitive.Trigger data-slot="drawer-trigger" {...props} />
+function DrawerTrigger({ asChild, children, ...props }) {
+  return (
+    <DrawerPrimitive.Trigger
+      data-slot="drawer-trigger"
+      render={asChild ? children : undefined}
+      {...props}
+    >
+      {asChild ? null : children}
+    </DrawerPrimitive.Trigger>
+  )
 }
 
 function DrawerPortal({
@@ -52,10 +58,16 @@ function DrawerPortal({
   return <DrawerPrimitive.Portal data-slot="drawer-portal" {...props} />
 }
 
-function DrawerClose({
-  ...props
-}) {
-  return <DrawerPrimitive.Close data-slot="drawer-close" {...props} />
+function DrawerClose({ asChild, children, ...props }) {
+  return (
+    <DrawerPrimitive.Close
+      data-slot="drawer-close"
+      render={asChild ? children : undefined}
+      {...props}
+    >
+      {asChild ? null : children}
+    </DrawerPrimitive.Close>
+  )
 }
 
 function DrawerOverlay({

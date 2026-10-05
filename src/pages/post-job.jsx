@@ -94,6 +94,7 @@ const PostJob = () => {
     if (isLoaded) {
       fnCompanies();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded]);
 
   if (!isLoaded || loadingCompanies) {
@@ -155,7 +156,7 @@ const PostJob = () => {
                 value={field.value}
                 onValueChange={field.onChange}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Job Location" />
                 </SelectTrigger>
 
@@ -186,7 +187,7 @@ const PostJob = () => {
                 value={field.value}
                 onValueChange={field.onChange}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Company" />
                 </SelectTrigger>
 

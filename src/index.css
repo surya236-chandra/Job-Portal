@@ -118,28 +118,53 @@
 }
  
 @utility gradient {
-  @apply bg-gradient-to-br from-gray-500 via-gray-200 to-white;
+  @apply bg-gradient-to-r from-white via-slate-100 to-slate-400;
 }
 
 @utility gradient-title {
-  @apply gradient text-transparent bg-clip-text;
+  @apply bg-gradient-to-r from-white via-blue-100 to-indigo-300 text-transparent bg-clip-text drop-shadow-[0_2px_16px_rgba(99,102,241,0.25)];
 }
 
+@utility gradient-accent {
+  @apply bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 text-transparent bg-clip-text;
+}
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    }
+  }
   body {
-    @apply bg-background text-foreground;
-    }
+    @apply bg-background text-foreground antialiased selection:bg-indigo-500/30 selection:text-indigo-200;
+  }
   html {
-    @apply font-sans;
-    }
+    @apply font-sans scroll-smooth;
+  }
+}
+
+.wmde-markdown {
+  background-color: transparent !important;
 }
 
 .wmde-markdown ul {
   list-style-type: disc;
   padding-left: 25px;
-  color: white;
+  color: #e2e8f0;
+}
+
+.wmde-markdown ol {
+  list-style-type: decimal;
+  padding-left: 25px;
+  color: #e2e8f0;
+}
+
+.wmde-markdown p, .wmde-markdown li {
+  line-height: 1.75;
+  color: #cbd5e1;
+}
+
+.wmde-markdown h1, .wmde-markdown h2, .wmde-markdown h3, .wmde-markdown h4 {
+  color: #f8fafc;
+  font-weight: 700;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
 }

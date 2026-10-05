@@ -76,7 +76,7 @@ const AddCompanyDrawer = ({ fetchCompanies }) => {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button type="button" size="sm" variant="secondary">
+        <Button type="button" size="sm" variant="secondary" className="whitespace-nowrap">
           Add Company
         </Button>
       </DrawerTrigger>
@@ -90,7 +90,7 @@ const AddCompanyDrawer = ({ fetchCompanies }) => {
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex gap-2 p-4 pb-0"
+          className="flex flex-col sm:flex-row gap-2 p-4 pb-0"
         >
           {/* Company Name */}
           <Input
@@ -102,7 +102,7 @@ const AddCompanyDrawer = ({ fetchCompanies }) => {
           <Input
             type="file"
             accept="image/png,image/jpeg"
-            className="file:text-gray-500"
+            className="file:text-gray-400"
             {...register("logo")}
           />
 
@@ -110,7 +110,7 @@ const AddCompanyDrawer = ({ fetchCompanies }) => {
           <Button
             type="submit"
             variant="destructive"
-            className="w-40"
+            className="sm:w-40"
             disabled={loadingAddCompany}
           >
             {loadingAddCompany ? "Adding..." : "Add"}

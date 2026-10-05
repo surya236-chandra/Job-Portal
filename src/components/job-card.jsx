@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Heart, MapPinIcon, Trash2Icon } from "lucide-react";
+import { Heart, MapPin, Trash2, ArrowUpRight, Building2, Briefcase } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -22,11 +22,10 @@ const JobCard = ({
   isMyJob = false,
 }) => {
   const [saved, setSaved] = useState(savedInit);
-
   const { user } = useUser();
 
   const { loading: loadingDeleteJob, fn: fnDeleteJob } = useFetch(deleteJob, {
-    job_id: job.id,
+    job_id: job?.id,
   });
 
   const {
@@ -45,70 +44,128 @@ const JobCard = ({
     onJobAction();
   };
 
-  const handleDeleteJob = async () => {
-    await fnDeleteJob();
-    onJobAction();
+  const handleDeleteJob = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (window.confirm("Are you sure you want to delete this job listing?")) {
+      await fnDeleteJob();
+      onJobAction();
+    }
   };
 
   useEffect(() => {
     if (savedJob !== undefined) setSaved(savedJob?.length > 0);
   }, [savedJob]);
 
+  // Safe snippet resolution to avoid empty string if no period is present
+  const getSnippet = () => {
+    if (!job?.description) return "";
+    const firstPeriod = job.description.indexOf(".");
+    if (firstPeriod > 0) {
+      return job.description.substring(0, firstPeriod + 1);
+    }
+    return job.description.length > 120
+      ? job.description.substring(0, 120) + "..."
+      : job.description;
+  };
+
   return (
-    <Card className="flex flex-col">
+    <Card className="group relative flex flex-col justify-between hover:border-indigo-500/40 hover:bg-[#161622]/90 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300">
       {loadingDeleteJob && (
-        <BarLoader className="mt-4" width={"100%"} color="#36d7b7" />
+        <div className="absolute top-0 left-0 right-0 z-10">
+          <BarLoader width={"100%"} color="#ef4444" />
+        </div>
       )}
 
-      <CardHeader className="flex">
-        <CardTitle className="flex justify-between font-bold">
-          {job.title}
+      <div>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex justify-between items-start gap-3">
+            <Link
+              to={`/job/${job?.id}`}
+              className="text-lg font-bold text-white hover:text-indigo-300 transition-colors line-clamp-1 group-hover:text-indigo-200"
+            >
+              {job?.title}
+            </Link>
 
-          {isMyJob && (
-            <Trash2Icon
-              fill="red"
-              size={18}
-              className="text-red-300 cursor-pointer"
-              onClick={handleDeleteJob}
-            />
-          )}
-        </CardTitle>
-      </CardHeader>
+            {isMyJob && (
+              <button
+                type="button"
+                aria-label="Delete Job"
+                className="p-1.5 rounded-lg text-rose-400 hover:text-white hover:bg-rose-500/20 transition-all cursor-pointer"
+                onClick={handleDeleteJob}
+              >
+                <Trash2 size={16} />
+              </button>
+            )}
+          </CardTitle>
+        </CardHeader>
 
-      <CardContent className="flex flex-col gap-4 flex-1">
-        <div className="flex justify-between">
-          {job.company && (
-            <img src={job.company.logo_url} className="h-6" />
-          )}
+        <CardContent className="flex flex-col gap-3 pb-3">
+          {/* Company & Location Badges */}
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            {job?.company ? (
+              <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-white/[0.05] border border-white/[0.08] max-w-[60%]">
+                {job.company.logo_url ? (
+                  <img
+                    src={job.company.logo_url}
+                    alt={job.company.name}
+                    className="h-4 max-w-[80px] object-contain"
+                  />
+                ) : (
+                  <Building2 size={14} className="text-slate-400" />
+                )}
+                <span className="text-xs font-medium text-slate-300 truncate">
+                  {job.company.name}
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 text-xs text-slate-400">
+                <Briefcase size={14} className="text-indigo-400" />
+                <span>Job Opportunity</span>
+              </div>
+            )}
 
-          <div className="flex gap-2 items-center">
-            <MapPinIcon size={15} /> {job.location}
+            <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium">
+              <MapPin size={12} className="text-indigo-400 shrink-0" />
+              <span className="truncate max-w-[120px]">{job?.location || "Remote"}</span>
+            </div>
           </div>
-        </div>
 
-        <hr />
+          <p className="text-xs sm:text-sm text-slate-400 line-clamp-2 leading-relaxed pt-1">
+            {getSnippet()}
+          </p>
+        </CardContent>
+      </div>
 
-        {job.description.substring(0, job.description.indexOf("."))}.
-      </CardContent>
-
-      <CardFooter className="flex gap-2">
-        <Link to={`/job/${job.id}`} className="flex-1">
-          <Button variant="secondary" className="w-full">
-            More Details
+      <CardFooter className="flex items-center gap-2 pt-3 border-t border-white/[0.06]">
+        <Link to={`/job/${job?.id}`} className="flex-1">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="w-full justify-between rounded-xl hover:bg-indigo-600 hover:text-white hover:border-transparent transition-all group/btn"
+          >
+            <span className="text-xs font-medium">View Details</span>
+            <ArrowUpRight size={15} className="transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
           </Button>
         </Link>
 
         {!isMyJob && (
           <Button
             variant="outline"
-            className="w-15"
+            size="icon-sm"
+            className={`rounded-xl transition-all ${
+              saved
+                ? "bg-rose-500/15 border-rose-500/40 text-rose-500 hover:bg-rose-500/25 shadow-sm shadow-rose-500/20"
+                : "hover:border-white/30 text-slate-400 hover:text-rose-400"
+            }`}
             onClick={handleSaveJob}
             disabled={loadingSavedJob}
+            aria-label="Save Job"
           >
             {saved ? (
-              <Heart size={20} fill="red" stroke="red" />
+              <Heart size={16} fill="currentColor" className="text-rose-500 scale-110 transition-transform" />
             ) : (
-              <Heart size={20} />
+              <Heart size={16} />
             )}
           </Button>
         )}
